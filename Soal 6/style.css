@@ -1,0 +1,10 @@
+/* Tambahkan styling untuk membuat gambar lingkaran dengan border dan bayangan */
+  img {
+    display: block;
+    margin: 0 auto;
+    width: 400px;
+    height: auto;
+    border-radius: 50%;
+  }
+  
+  

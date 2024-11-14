@@ -1,0 +1,61 @@
+name: Autograding Web Technology
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ui-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npx playwright install
+
+      - name: Run UI tests and capture results
+        run: |
+          # Create a results directory to save overall test outcomes
+          mkdir -p overall-results
+
+          # Loop through each question directory to run the tests and check results
+          for soal in {1..10}; do
+            echo "Running test for Soal $soal..."
+
+            # Check if the test file exists
+            if [ -f "Soal $soal/tests/ui.test.js" ]; then
+              # Run the test directly without directory change
+              npx playwright test "Soal $soal/tests/ui.test.js" --reporter=junit || echo "Test execution failed for Soal $soal."
+
+              # Check if .last-run.json was created in the test-results directory at the root
+              if [ -f "./test-results/.last-run.json" ]; then
+                # Read the pass/fail status from .last-run.json
+                test_status=$(jq -r '.status' "./test-results/.last-run.json")
+                echo "Test result for Soal $soal: $test_status"
+
+                # Save the result to an overall results file
+                echo "Soal $soal: $test_status" >> overall-results/summary.txt
+              else
+                echo "No .last-run.json found for Soal $soal - skipping result."
+                echo "Soal $soal: no result" >> overall-results/summary.txt
+              fi
+            else
+              echo "No UI test file found for Soal $soal."
+              echo "Soal $soal: no test file" >> overall-results/summary.txt
+            fi
+          done
+
+      - name: Display test results summary
+        run: |
+          echo "Aggregated Test Results:"
+          cat overall-results/summary.txt

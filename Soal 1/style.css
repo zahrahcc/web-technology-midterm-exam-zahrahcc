@@ -1,0 +1,8 @@
+/* Tambahkan styling untuk heading, paragraf, dan list di sini */
+h1 {
+    font-family: 'Times New Roman', Times, serif
+}
+
+label {
+    color: pink
+}

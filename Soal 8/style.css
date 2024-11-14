@@ -1,0 +1,12 @@
+/* Tambahkan styling untuk warna latar dalam mode terang dan gelap */
+/* Mode gelap */
+body.dark-mode {
+    background-color: black;
+    color: white;
+}
+
+/* mode terang */
+body.light-mode {
+    background-color: white;
+    color: black;
+}
